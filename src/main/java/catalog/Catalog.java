@@ -230,7 +230,7 @@ public class Catalog {
         Grupa grupa = preiaGrupaDupaNume(numeGrupa);
         for (String materie : grupa.getMaterii().keySet())
         {
-            System.out.println(grupa.getMaterii().keySet());
+            System.out.println(materie);
         }
     }
 
