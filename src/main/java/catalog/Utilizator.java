@@ -41,4 +41,14 @@ public class Utilizator {
     public Drepturi getDrepturi() {
         return drepturi;
     }
+
+    @Override
+    public String toString() {
+        return "Utilizator{" +
+                "nume='" + nume + '\'' +
+                ", numeUtilizator='" + numeUtilizator + '\'' +
+                ", parola='" + parola + '\'' +
+                ", drepturi=" + drepturi +
+                '}';
+    }
 }

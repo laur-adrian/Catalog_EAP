@@ -21,4 +21,11 @@ public class Student extends Utilizator{
         note.put(materie, nota);
     }
 
+    @Override
+    public String toString() {
+        return "Student{"
+                + super.toString() + ", " +
+                "note=" + note +
+                '}';
+    }
 }

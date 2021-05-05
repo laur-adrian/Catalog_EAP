@@ -9,11 +9,16 @@ public class Catalog {
     private List<Utilizator> utilizatori;
     private Utilizator utilizatorLogat;
 
+    private CSVData csvData = CSVData.getInstance();
+
     public Catalog() {
-        grupe = citesteGrupe();
-        utilizatori = citesteUtilizatori();
-        Utilizator admin = new Utilizator("Laur", "laurica", "farafrica", Utilizator.Drepturi.ADMIN);
-        utilizatori.add(admin);
+//        grupe = citesteGrupe();
+//        utilizatori = citesteUtilizatori();
+        utilizatori = csvData.citesteUtilizatori();
+        grupe = csvData.citesteGrupe(utilizatori);
+
+//        Utilizator admin = new Utilizator("Laur", "laurica", "farafrica", Utilizator.Drepturi.ADMIN);
+//        utilizatori.add(admin);
     }
 
     public static List<Grupa> citesteGrupe(){
@@ -97,7 +102,7 @@ public class Catalog {
     public Grupa preiaGrupaDupaNume (String numeGrupa){
         for (Grupa g : grupe)
         {
-            if (numeGrupa == g.getNume())
+            if (numeGrupa.equals(g.getNume()))
                 return g;
         }
         return null;

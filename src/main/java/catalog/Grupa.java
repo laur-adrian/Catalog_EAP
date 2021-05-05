@@ -36,6 +36,12 @@ public class Grupa {
     }
     public void adaugareStudent(Student student) {studenti.add(student);}
 
-    // TODO metode de listare al mepului (doar profii, doar materiile, sau ambele)
-
+    @Override
+    public String toString() {
+        return "Grupa{" +
+                "nume='" + nume + '\'' +
+                ", studenti=" + studenti +
+                ", materii=" + materii +
+                '}';
+    }
 }
