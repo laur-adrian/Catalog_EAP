@@ -1,5 +1,9 @@
 package catalog;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +15,9 @@ public class Catalog {
 
     private CSVData csvData = CSVData.getInstance();
 
+    private final static String numeFisierLog = "src/main/csv/syslog.csv";
+    private BufferedWriter log;
+
     public Catalog() {
 //        grupe = citesteGrupe();
 //        utilizatori = citesteUtilizatori();
@@ -19,6 +26,13 @@ public class Catalog {
 
 //        Utilizator admin = new Utilizator("Laur", "laurica", "farafrica", Utilizator.Drepturi.ADMIN);
 //        utilizatori.add(admin);
+
+        try {
+            FileWriter fw = new FileWriter(numeFisierLog);
+            log = new BufferedWriter(fw);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static List<Grupa> citesteGrupe(){
@@ -39,6 +53,7 @@ public class Catalog {
                 if (u.getParola().equals(parola)) {
                     utilizatorLogat=u;
                     System.out.println("Logare reusita!");
+                    scrieInLog("Login reusit cu user " + user);
                     return true;
                 }
             }
@@ -47,6 +62,7 @@ public class Catalog {
     }
 
     public void delogare(){
+        scrieInLog("Delogare reusita pentru user " + utilizatorLogat.getNumeUtilizator());
         utilizatorLogat=null;
         System.out.println("Delogare reusita!");
     }
@@ -59,18 +75,21 @@ public class Catalog {
                     Administrator admin = new Administrator(nume, numeUtilizator, parola);
                     utilizatori.add(admin);
                     System.out.println("Adaugarea utilizatorului "+numeUtilizator+" cu drepturi de "+Utilizator.Drepturi.ADMIN+" s-a incheiat cu succes");
+                    scrieInLog("Adaugare reusita a utilizatorului " + numeUtilizator + " cu drepturi de " + Utilizator.Drepturi.ADMIN);
                 }
                 else if(drept == Utilizator.Drepturi.PROFESOR)
                 {
                     Profesor prof = new Profesor(nume, numeUtilizator, parola);
                     utilizatori.add(prof);
                     System.out.println("Adaugarea utilizatorului "+numeUtilizator+" cu drepturi de "+Utilizator.Drepturi.PROFESOR+" s-a incheiat cu succes");
+                    scrieInLog("Adaugare reusita a utilizatorului " + numeUtilizator + " cu drepturi de " + Utilizator.Drepturi.PROFESOR);
                 }
                 else if(drept == Utilizator.Drepturi.STUDENT)
                 {
                     Student stud = new Student(nume, numeUtilizator, parola);
                     utilizatori.add(stud);
                     System.out.println("Adaugarea utilizatorului "+numeUtilizator+" cu drepturi de "+Utilizator.Drepturi.STUDENT+" s-a incheiat cu succes");
+                    scrieInLog("Adaugare reusita a utilizatorului " + numeUtilizator + " cu drepturi de " + Utilizator.Drepturi.STUDENT);
                 }
             }
             else{
@@ -87,6 +106,7 @@ public class Catalog {
             if (utilizatorLogat.getDrepturi().equals(Utilizator.Drepturi.ADMIN)) {
                 grupe.add(grupa);
                 System.out.println("Grupa "+grupa.getNume()+" a fost adaugată cu succes!");
+                scrieInLog("Adaugare reusita a grupei" + grupa.getNume());
             }
             else{
                 System.err.println("Nu aveti drepturile necesare pentru a adauga o grupa noua");
@@ -127,6 +147,7 @@ public class Catalog {
                 Student s = preiaStudentDupaNume(numeStudent);
                 g.adaugareStudent(s);
                 System.out.println("Studentul "+numeStudent+" a fost adaugat cu succes in grupa "+numeGrupa);
+                scrieInLog("Adaugare reusita a studentului" + numeStudent + "in grupa " + numeGrupa);
             }
             else{
                 System.err.println("Nu aveti drepturile necesare pentru a adauga un student nou unei grupe!");
@@ -156,6 +177,7 @@ public class Catalog {
                 Grupa grupa = preiaGrupaDupaNume(numeGrupa);
                 grupa.adaugareMaterie(materie, profesor);
                 System.out.println("Materia "+materie+" predata de "+numeProfesor+" a fost adaugata cu succes in lista materiilor grupei "+numeGrupa);
+                scrieInLog("Materia "+materie+" predata de "+numeProfesor+" a fost adaugata cu succes in lista materiilor grupei "+numeGrupa);
             }
             else{
                 System.err.println("Nu aveti drepturile necesare pentru a adauga o materie si un profesor unei grupe!");
@@ -186,6 +208,7 @@ public class Catalog {
                 {
                     student.adaugareNota(materie, nota);
                     System.out.println("Nota obtinută de studentul "+numeStudent+"la materia "+materie+"a fost agaugata cu succes în catalog");
+                    scrieInLog("Nota obtinută de studentul "+numeStudent+"la materia "+materie+"a fost agaugata cu succes în catalog");
                 }
                 else
                     System.err.println("Materia " + materie + " nu exista in cadrul grupei "+ numeGrupa + "!");
@@ -206,6 +229,7 @@ public class Catalog {
         {
             System.out.println(materie + " " + student.getNote().get(materie));
         }
+        scrieInLog("Afisarea notelor studentului " + numeStudent + " a fost incheiata cu succes");
     }
 
     public void afisareNoteMaterieGrupa(String materie, String numeGrupa){ // Afiseaza notelor tuturor studentilor dintr-o grupa la o anumita materie
@@ -219,6 +243,7 @@ public class Catalog {
                     System.out.println(s.getNume() + " " + s.getNote().get(materie));
             }
         }
+        scrieInLog("Afisarea notelor studentilor grupei " + numeGrupa + " la materia " + materie + " a fost incheiata cu succes");
     }
 
     public void afisareStudentiGrupa(String numeGrupa){
@@ -228,6 +253,7 @@ public class Catalog {
         {
             System.out.println(s.getNume());
         }
+        scrieInLog("Afisarea studentilor din grupa " + numeGrupa + " a fost incheiata cu succes");
     }
 
     public void afisareMateriiGrupa(String numeGrupa){
@@ -237,6 +263,25 @@ public class Catalog {
         {
             System.out.println(materie);
         }
+        scrieInLog("Afisarea materiilor grupei " + numeGrupa + " a fost incheiata cu succes");
     }
 
+    public void salveazaInCSV() {
+        csvData.scrieUtilizatoriInCSV(utilizatori);
+        csvData.scrieGrupeInCSV(grupe);
+
+        try {
+            log.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void scrieInLog(String ceScrie) {
+        try {
+            log.write(ceScrie + "," + System.currentTimeMillis() + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
