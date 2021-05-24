@@ -9,20 +9,23 @@ import java.util.List;
 
 public class Catalog {
 
-    private List<Grupa> grupe;
-    private List<Utilizator> utilizatori;
+    private static List<Grupa> grupe;
+    private static List<Utilizator> utilizatori;
     private Utilizator utilizatorLogat;
 
     private CSVData csvData = CSVData.getInstance();
+    private static JDBCData jdbcData = JDBCData.getInstance("jdbc:mysql://localhost:3306/Catalog_EAP","Laur","Laurbazadate");
 
     private final static String numeFisierLog = "src/main/csv/syslog.csv";
-    private BufferedWriter log;
+    private static BufferedWriter log;
 
     public Catalog() {
 //        grupe = citesteGrupe();
 //        utilizatori = citesteUtilizatori();
-        utilizatori = csvData.citesteUtilizatori();
-        grupe = csvData.citesteGrupe(utilizatori);
+//        utilizatori = csvData.citesteUtilizatori();
+//        grupe = csvData.citesteGrupe(utilizatori);
+        grupe = jdbcData.citesteGrupe();
+        utilizatori = jdbcData.citesteUtilizatori();
 
 //        Utilizator admin = new Utilizator("Laur", "laurica", "farafrica", Utilizator.Drepturi.ADMIN);
 //        utilizatori.add(admin);
@@ -170,7 +173,7 @@ public class Catalog {
         return null;
     }
 
-    public void adugareMaterieGrupa(String materie, String numeProfesor, String numeGrupa){
+    public void adaugareMaterieGrupa(String materie, String numeProfesor, String numeGrupa){
         if (utilizatorLogat != null) {
             if (utilizatorLogat.getDrepturi().equals(Utilizator.Drepturi.ADMIN)) {
                 Profesor profesor = preiaProfDupaNume(numeProfesor);
@@ -266,10 +269,20 @@ public class Catalog {
         scrieInLog("Afisarea materiilor grupei " + numeGrupa + " a fost incheiata cu succes");
     }
 
-    public void salveazaInCSV() {
+/*    public void salveazaInCSV() {
         csvData.scrieUtilizatoriInCSV(utilizatori);
         csvData.scrieGrupeInCSV(grupe);
 
+        try {
+            log.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }*/
+
+    public static void salveazainDB(){
+        jdbcData.scrieGrupeInDB(grupe);
+        jdbcData.scrieUtilizatoriInDB(utilizatori);
         try {
             log.flush();
         } catch (IOException e) {
