@@ -1,0 +1,48 @@
+create table ADMINISTRATORI
+(
+    numeUtilizator varchar(50),
+    nume           varchar(50),
+    parola         varchar(50),
+    PRIMARY KEY (numeUtilizator)
+);
+create table PROFESORI
+(
+    numeUtilizator varchar(50),
+    nume           varchar(50),
+    parola         varchar(50),
+    PRIMARY KEY (numeUtilizator)
+);
+create table GRUPE
+(
+    numeGrupa varchar(20),
+    PRIMARY KEY (numeGrupa)
+
+);
+create table MATERII
+(
+    numeMaterie varchar(20),
+    grupa       varchar(20),
+    profesor    varchar(50),
+    PRIMARY KEY (numeMaterie, grupa),
+    FOREIGN KEY (profesor) REFERENCES PROFESORI (numeUtilizator),
+    FOREIGN KEY (grupa) REFERENCES GRUPE (numeGrupa)
+);
+create table STUDENTI
+(
+    numeUtilizator varchar(50),
+    nume           varchar(50),
+    parola         varchar(50),
+    grupa          varchar(20),
+    PRIMARY KEY (numeUtilizator),
+    FOREIGN KEY (grupa) REFERENCES GRUPE (numeGrupa)
+);
+create table NOTE
+(
+    numeUtilizator varchar(50),
+    materie        varchar(50),
+    nota           int,
+    PRIMARY KEY (numeUtilizator,materie),
+    FOREIGN KEY (numeUtilizator) REFERENCES STUDENTI (numeUtilizator),
+    FOREIGN KEY (materie) REFERENCES MATERII (numeMaterie)
+);
+
